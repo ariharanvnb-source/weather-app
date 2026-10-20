@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weather Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      background: linear-gradient(135deg, #123b72, #2797c8);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+    main {
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      background: rgba(255,255,255,.14);
+      padding: 30px;
+      border-radius: 20px;
+    }
+    .icon { font-size: 65px; margin: 20px; }
+    .temperature { font-size: 56px; font-weight: bold; }
+    .condition { font-size: 22px; }
+    .details { display: flex; gap: 12px; margin-top: 25px; }
+    .detail {
+      flex: 1;
+      padding: 16px 8px;
+      background: rgba(255,255,255,.15);
+      border-radius: 12px;
+    }
+    button {
+      margin-top: 24px;
+      padding: 12px 20px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Weather Dashboard</h1>
+    <p id="city">Loading...</p>
+    <div class="icon">☀️</div>
+    <div class="temperature" id="temperature">--°C</div>
+    <div class="condition" id="condition">Loading...</div>
+    <div class="details">
+      <div class="detail">
+        Humidity<br><strong id="humidity">--%</strong>
+      </div>
+      <div class="detail">
+        Wind<br><strong id="wind">-- km/h</strong>
+      </div>
+    </div>
+    <button onclick="loadWeather()">Refresh Weather</button>
+    <p id="status">Connecting...</p>
+  </main>
+  <script>
+    async function loadWeather() {
+      try {
+        const response = await fetch('/api/weather');
+        if (!response.ok) throw new Error('Request failed');
+        const data = await response.json();
+
+        document.getElementById('city').textContent = data.city;
+        document.getElementById('temperature').textContent =
+          data.temperature + '°C';
+        document.getElementById('condition').textContent = data.condition;
+        document.getElementById('humidity').textContent = data.humidity + '%';
+        document.getElementById('wind').textContent = data.wind + ' km/h';
+        document.getElementById('status').textContent = data.note;
+      } catch {
+        document.getElementById('status').textContent =
+          'Unable to load weather data';
+      }
+    }
+    loadWeather();
+  </script>
+</body>
+</html>
